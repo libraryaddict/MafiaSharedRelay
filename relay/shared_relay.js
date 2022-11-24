@@ -6,6 +6,7 @@
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "$p": () => (/* binding */ parseCssFromFile),
 /* harmony export */   "ar": () => (/* binding */ generateHTML),
 /* harmony export */   "jU": () => (/* binding */ parsePageFromFile)
 /* harmony export */ });
@@ -167,9 +168,31 @@ function parsePageFromFile(file) {
   file :
   "relay/shared_relay/pages/" + file + ".json";
 
+  if (!fileName.endsWith(".json") && (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.fileToBuffer)(fileName).length == 0) {
+    fileName += ".json";
+  }
+
   var data = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.fileToBuffer)(fileName);
 
   return parsePageFromJson(file, data);
+}
+
+function parseCssFromFile(file) {
+  var fileName = file.includes("/") ?
+  file :
+  "shared_relay/pages/" + file + ".css";
+
+  if (!fileName.endsWith(".css")) {
+    fileName += ".css";
+  }
+
+  var data = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.fileToBuffer)(fileName);
+
+  if (data.length == 0) {
+    return null;
+  }
+
+  return fileName;
 }
 
 function parsePageFromJson(id, jsonData) {
@@ -324,11 +347,14 @@ function main() {for (var _len = arguments.length, pagesToLoad = new Array(_len)
   }
 
   var pages = [];
+  var extraHtml;
 
-  if (pagesToLoad.length > 0) {var _iterator = _createForOfIteratorHelper(
+  if (pagesToLoad.length > 0) {
+    var cssFile;var _iterator = _createForOfIteratorHelper(
       pagesToLoad),_step;try {for (_iterator.s(); !(_step = _iterator.n()).done;) {var page = _step.value;
         // If the parameter is a string, then try to load from file
         if (typeof page == "string") {
+          cssFile = (0,_RelayUtils__WEBPACK_IMPORTED_MODULE_1__/* .parseCssFromFile */ .$p)(page);
           page = (0,_RelayUtils__WEBPACK_IMPORTED_MODULE_1__/* .parsePageFromFile */ .jU)(page);
         }
 
@@ -338,6 +364,16 @@ function main() {for (var _len = arguments.length, pagesToLoad = new Array(_len)
 
         // Assume at this point it must be a RelayPage
         pages.push(page);
+
+        if (cssFile == null) {
+          continue;
+        }
+
+        if (extraHtml == null) {
+          extraHtml = { cssFiles: [] };
+        }
+
+        extraHtml.cssFiles.push(cssFile);
       }} catch (err) {_iterator.e(err);} finally {_iterator.f();}
   }
 
@@ -348,7 +384,7 @@ function main() {for (var _len = arguments.length, pagesToLoad = new Array(_len)
     return;
   }
 
-  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.write)((0,_RelayUtils__WEBPACK_IMPORTED_MODULE_1__/* .generateHTML */ .ar)(pages));
+  (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.write)((0,_RelayUtils__WEBPACK_IMPORTED_MODULE_1__/* .generateHTML */ .ar)(pages, extraHtml));
 }
 })();
 
