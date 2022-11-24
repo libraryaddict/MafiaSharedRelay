@@ -30,7 +30,7 @@ jobs:
           git config user.name "Build Script"
           git config user.email "<>"
           git fetch --all
-          cp relay built/relay -r
+          cp relay built/ -r
           git switch release
           rm -r relay/
           mv built/relay relay
