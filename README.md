@@ -4,6 +4,8 @@ This can be used in two ways. The first is by a script as a library, the second 
 
 The json file is expected to be located in `relay/shared_relay/pages/`, an example of how you'd load it is provided in `relay/shared_relay/relay_Scripts.js`. Just replace the `test` with your own page name. You can also name files outside of the folder, by default it will look in that folder if the path provided does not contain a /.
 
+https://github.com/libraryaddict/MafiaSharedRelay/blob/master/relay/shared_relay/pages/test.json
+
 You can do multiple pages, `"test", "test2", "test3"`
 
 If your relay page fails to load, then you did some bad json or missed a parameter or something. Try validate your json, and check against the `test.json` file to see if you missed something. This is not a dummy proof system.
