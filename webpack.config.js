@@ -99,4 +99,4 @@ const relayConfig = merge(
   sharedConfig
 );
 
-module.exports = [libConfig, relayConfig, otherRelayConfig];
+module.exports = [/*libConfig, */ relayConfig, otherRelayConfig];
