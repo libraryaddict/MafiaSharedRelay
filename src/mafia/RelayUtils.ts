@@ -149,13 +149,35 @@ export function generateHTML(
  * Parses from relay/shared_relay/pages/ if no slashes are in the name, otherwise expects a valid json file
  */
 export function parsePageFromFile(file: string): RelayPage {
-  const fileName = file.includes("/")
+  let fileName = file.includes("/")
     ? file
     : "relay/shared_relay/pages/" + file + ".json";
+
+  if (!fileName.endsWith(".json") && fileToBuffer(fileName).length == 0) {
+    fileName += ".json";
+  }
 
   const data = fileToBuffer(fileName);
 
   return parsePageFromJson(file, data);
+}
+
+export function parseCssFromFile(file: string): string | null {
+  let fileName = file.includes("/")
+    ? file
+    : "shared_relay/pages/" + file + ".css";
+
+  if (!fileName.endsWith(".css")) {
+    fileName += ".css";
+  }
+
+  const data = fileToBuffer(fileName);
+
+  if (data.length == 0) {
+    return null;
+  }
+
+  return fileName;
 }
 
 export function parsePageFromJson(id: string, jsonData: string): RelayPage {

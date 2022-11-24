@@ -1,5 +1,11 @@
 import { formFields, write } from "kolmafia";
-import { generateHTML, parsePageFromFile, RelayPage } from "./RelayUtils";
+import {
+  ExtraHtml,
+  generateHTML,
+  parseCssFromFile,
+  parsePageFromFile,
+  RelayPage,
+} from "./RelayUtils";
 
 export function main(...pagesToLoad: (string | RelayPage)[]) {
   const fields = formFields();
@@ -19,11 +25,14 @@ export function main(...pagesToLoad: (string | RelayPage)[]) {
   }
 
   const pages = [];
+  let extraHtml: ExtraHtml;
 
   if (pagesToLoad.length > 0) {
+    let cssFile: string;
     for (let page of pagesToLoad) {
       // If the parameter is a string, then try to load from file
       if (typeof page == "string") {
+        cssFile = parseCssFromFile(page);
         page = parsePageFromFile(page);
       }
 
@@ -33,6 +42,16 @@ export function main(...pagesToLoad: (string | RelayPage)[]) {
 
       // Assume at this point it must be a RelayPage
       pages.push(page);
+
+      if (cssFile == null) {
+        continue;
+      }
+
+      if (extraHtml == null) {
+        extraHtml = { cssFiles: [] };
+      }
+
+      extraHtml.cssFiles.push(cssFile);
     }
   }
 
@@ -43,5 +62,5 @@ export function main(...pagesToLoad: (string | RelayPage)[]) {
     return;
   }
 
-  write(generateHTML(pages));
+  write(generateHTML(pages, extraHtml));
 }

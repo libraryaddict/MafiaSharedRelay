@@ -10,6 +10,8 @@ You can do multiple pages, `"test", "test2", "test3"`
 
 If your relay page fails to load, then you did some bad json or missed a parameter or something. Try validate your json, and check against the `test.json` file to see if you missed something. This is not a dummy proof system.
 
+Place a file with the same name but .css and it'll load that css file alongside your page of the same name. So `test.css` and `test.json`
+
 For scripters, you can install the npm library located here:
 You will be bundling this into your script.
 
@@ -29,8 +31,8 @@ It loads the properties in a more simple manner, it's created in a data object w
 
 To install as an API, use
 
-```npm i mafia-shared-relay```
+`npm i mafia-shared-relay`
 
 To install otherwise
 
-```git checkout libraryaddict/MafiaSharedRelay release```
+`git checkout libraryaddict/MafiaSharedRelay release`
