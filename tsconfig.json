@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "experimentalDecorators": true,
+    "allowUnreachableCode": true,
+    "allowUnusedLabels": false,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["esnext"],
+    "module": "commonjs",
+    "noEmitOnError": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": false,
+    "pretty": true,
+    "strict": false,
+    "target": "esnext",
+    "useDefineForClassFields": false,
+    // Ensure that Babel can safely transpile files in the TypeScript project
+    "isolatedModules": true
+  },
+  "include": ["src/**/*.ts"]
+}
