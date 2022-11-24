@@ -13,7 +13,7 @@ You will be bundling this into your script.
 
 To make use of it, you will be making a `relay/relay_MyScript.js` file that calls `generateHTML(pages: HtmlPage[])`. You can also provide extra css by providing `ExtraHtml`
 
-Components to be used are found in <Link> and work the same way as the .json structure does for the most part.
+Components to be used are found in https://github.com/libraryaddict/MafiaSharedRelay/blob/master/src/mafia/RelayUtils.ts#L3 and work the same way as the .json structure does for the most part.
 
 On the offchance you want to do something more complicated, you're probably better off making your own relay page. This used garbo's relay as a base, but reworked stuff until the only big similarity is the css.
 
@@ -24,3 +24,11 @@ This is how this script sets the properties, it invokes a script that executes t
 If the page would return no text, then ' ' is returned to prevent a 404 error.
 
 It loads the properties in a more simple manner, it's created in a data object when the relay page is first invoked. Which of course means that if the properties change while the relay script is open, the relay script will be unaware until it is refreshed.
+
+To install as an API, use
+
+```npm i mafia-shared-relay```
+
+To install otherwise
+
+```git checkout libraryaddict/MafiaSharedRelay release```
