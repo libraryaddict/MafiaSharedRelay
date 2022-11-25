@@ -62,7 +62,7 @@ async function runJavascript(javascript: string): Promise<string> {
   return new Promise((resolve) => {
     const xhr = new XMLHttpRequest();
     xhr.responseType = "text";
-    xhr.open("POST", window.location.href, true);
+    xhr.open("POST", "shared_relay.js?relay=true", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.send("api=" + encodeURIComponent(javascript));
     xhr.onreadystatechange = () => {

@@ -1,9 +1,8 @@
 {
   "name": "mafia-shared-relay",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "license": "MIT",
   "files": [
-    "tsconfig.json",
     "dist/index.js",
     "dist/index.d.ts"
   ],
@@ -42,6 +41,6 @@
     "react-router-dom": "^6.4.3"
   },
   "peerDependencies": {
-    "kolmafia": "5.26915.0"
+    "kolmafia": "^5.26915.0"
   }
 }
