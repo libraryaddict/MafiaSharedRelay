@@ -39,7 +39,7 @@
     "ts-loader": "^9.4.1",
     "typescript-declaration-webpack-plugin": "^0.2.2"
   },
-  "peerDependencies": {
+  "dependencies": {
     "kolmafia": "^5.26915.0"
   }
 }
