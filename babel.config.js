@@ -5,7 +5,6 @@ module.exports = function (api) {
   return {
     exclude: [],
     presets: [
-      "@babel/preset-typescript",
       [
         "@babel/preset-env",
         {
@@ -13,6 +12,7 @@ module.exports = function (api) {
           corejs: "3.8.0",
         },
       ],
+      "@babel/preset-typescript",
     ],
     plugins: [
       "@babel/plugin-proposal-class-properties",

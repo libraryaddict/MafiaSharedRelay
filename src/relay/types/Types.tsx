@@ -1,9 +1,11 @@
+export type SettingValidator = (value: string, objects: object) => boolean;
+
 export enum RelayComponentType {
   BOOLEAN = "boolean",
   DROPDOWN = "dropdown",
   STRING = "string",
   HTML = "html",
-  INTERRUPT = "interrupt"
+  INTERRUPT = "interrupt",
 }
 
 export interface InterruptPreference {
@@ -29,8 +31,10 @@ export interface ComponentSetting extends RelayComponent {
   description: string; // Display description
   preference: string; // Preference to set
   value: string; // Current value
+  setValue: (value: string) => void;
   previousValue: string; // Value before the setting was updated
-  validates: string; // A javascript function that accepts (string, object) => boolean, where object is a { pref : value } of all the settings this relay page has
+  validate: SettingValidator; // A javascript function that accepts (string, object) => boolean, where object is a { pref : value } of all the settings this relay page has
+  invalidReason: string;
   dropdown: ComponentDropdown[]; // Dropdown values if dropdown
 }
 

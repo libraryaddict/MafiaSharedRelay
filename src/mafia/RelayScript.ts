@@ -1,25 +1,20 @@
 import { formFields, write } from "kolmafia";
+import { RelayPage, ExtraHtml } from "./RelayTypes";
 import {
-  ExtraHtml,
   generateHTML,
+  handledApiRequest,
   parseCssFromFile,
   parsePageFromFile,
-  RelayPage,
 } from "./RelayUtils";
 
 export function main(...pagesToLoad: (string | RelayPage)[]) {
-  const fields = formFields();
-
-  if (fields["api"] != null) {
-    const returns = eval(fields["api"]) || "";
-    // We include the ' ' because otherwise the browser doesn't like an empty page
-    write(returns + (returns ? "" : " "));
+  if (handledApiRequest()) {
     return;
   }
 
   if (pagesToLoad.length == 0) {
     // Find any 'page' or 'pages' parameters
-    pagesToLoad = (fields["page"] || fields["pages"] || "")
+    pagesToLoad = (formFields()["page"] || formFields()["pages"] || "")
       .split(",")
       .filter((s) => s.length > 0);
   }

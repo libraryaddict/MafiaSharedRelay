@@ -35,6 +35,9 @@ input.stringcontainer {
   border-radius: 5px;
   border: 1px solid $dark;
   height: 24px;
+  margin: auto;
+  display: flex;
+  padding-left: 10px;
 }
 
 input.interrupt {
@@ -244,4 +247,20 @@ input[value="true"] + .toggle-track .toggle-indicator {
   visibility: visible;
   padding: 5px;
   margin-left: 15px;
+}
+
+.invalid-setting input,
+.invalid-setting select,
+.invalid-setting .toggle-track {
+  background: pink !important;
+}
+
+.invalid-reason {
+  text-align: center;
+}
+
+.invalid-reason small {
+  padding: 0px 5px;
+  border-radius: 10px;
+  color: red;
 }

@@ -8,6 +8,10 @@ getData((pages: ComponentPage[]) => {
   for (const page of pages) {
     for (const component of page.components as ComponentSetting[]) {
       component.previousValue = component.value;
+
+      if (component.validate != null) {
+        component.validate = eval(component.validate as unknown as string);
+      }
     }
   }
 

@@ -7,77 +7,138 @@ const { merge } = require("webpack-merge");
 const sharedConfig = {
   mode: "production",
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
+    extensions: [".tsx", ".ts", ".js"],
   },
   externals: {
-    kolmafia: "commonjs kolmafia"
+    kolmafia: "commonjs kolmafia",
   },
   optimization: {
-    minimize: false
-  }
+    minimize: false,
+  },
 };
 
-const CopyPlugin = require("copy-webpack-plugin");
+// Create the react files
+const createReact = merge(
+  {
+    name: "react",
+    entry: "./src/relay/index.tsx",
+    output: {
+      path: path.join(__dirname, "./built/react"),
+      filename: "script.js",
+      libraryTarget: "umd",
+    },
+    module: {
+      rules: [
+        {
+          // Include ts, tsx, js, and jsx files.
+          test: /\.tsx$/,
+          // exclude: /node_modules/,
+          loader: "babel-loader",
+          options: {
+            presets: [
+              "@babel/env",
+              "@babel/preset-typescript",
+              "@babel/preset-react",
+            ],
+          },
+        },
+        {
+          test: /\.scss$/,
+          use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        },
+      ],
+    },
+    plugins: [new MiniCssExtractPlugin()],
+  },
+  sharedConfig
+);
+
+const TypescriptDeclarationPlugin = require("typescript-declaration-webpack-plugin");
+const RemovePlugin = require("remove-files-webpack-plugin");
 
 // Create the NPM library
-const libConfig = merge(
+const createDeclarations = merge(
   {
-    entry: ["./src/mafia/RelayUtils.ts"],
+    name: "ts",
+    entry: "./src/mafia/RelayUtils.ts",
+    dependencies: ["react"],
+    output: {
+      filename: "ignored.js",
+      path: path.join(__dirname, "./dist"),
+      libraryTarget: "commonjs",
+    },
+    module: {
+      rules: [
+        {
+          // Include ts, tsx, js, and jsx files.
+          test: /\.ts$/,
+          // exclude: /node_modules/,
+          loader: "ts-loader",
+        },
+        {
+          test: /\.js/,
+          type: "asset/inline",
+        },
+        {
+          test: /\.css/,
+          type: "asset/source",
+        },
+      ],
+    },
+    plugins: [
+      new TypescriptDeclarationPlugin({ removeComments: false }),
+      new RemovePlugin({
+        after: {
+          include: ["./dist/ignored.js"],
+        },
+      }),
+    ],
+  },
+  sharedConfig
+);
+
+// Create the NPM library
+const createLibrary = merge(
+  {
+    name: "library",
+    entry: "./src/mafia/RelayUtils.ts",
+    dependencies: ["react", "ts"],
     output: {
       filename: "index.js",
       path: path.join(__dirname, "./dist"),
-      libraryTarget: "commonjs"
+      libraryTarget: "commonjs",
     },
     module: {
       rules: [
         {
           // Include ts, tsx, js, and jsx files.
-          test: /\.(ts|js)x?$/,
+          test: /\.ts$/,
           // exclude: /node_modules/,
-          loader: "babel-loader"
-        }
-      ]
+          loader: "babel-loader",
+        },
+        {
+          test: /\.js/,
+          type: "asset/inline",
+        },
+        {
+          test: /\.css/,
+          type: "asset/source",
+        },
+      ],
     },
-    plugins: [
-      new CopyPlugin({
-        patterns: [{ from: "./dist/mafia/RelayUtils.d.ts", to: "./index.d.ts" }]
-      })
-    ]
   },
   sharedConfig
 );
 
-// Create the relay file
-const otherRelayConfig = merge(
+// Create the relay file for non-script installs
+const createStandaloneRelay = merge(
   {
     entry: "./src/mafia/RelayScript.ts",
+    dependencies: ["library"],
     output: {
       path: path.join(__dirname, "./built/relay/"),
       filename: "shared_relay.js",
-      libraryTarget: "commonjs"
-    },
-    module: {
-      rules: [
-        {
-          // Include ts, tsx, js, and jsx files.
-          test: /\.(ts|js)x?$/,
-          // exclude: /node_modules/,
-          loader: "babel-loader"
-        }
-      ]
-    }
-  },
-  sharedConfig
-);
-
-// Create the react files
-const relayConfig = merge(
-  {
-    entry: "./src/relay/index.tsx",
-    output: {
-      path: path.join(__dirname, "./built/relay/shared_relay/"),
-      filename: "shared_relay.js",
-      libraryTarget: "commonjs"
+      libraryTarget: "commonjs",
     },
     module: {
       rules: [
@@ -86,17 +147,33 @@ const relayConfig = merge(
           test: /\.(ts|js)x?$/,
           // exclude: /node_modules/,
           loader: "babel-loader",
-          options: { presets: ["@babel/env", "@babel/preset-react"] }
         },
         {
-          test: /\.scss$/,
-          use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
-        }
-      ]
+          test: /\.js/,
+          type: "asset/inline",
+        },
+        {
+          test: /\.css/,
+          type: "asset/source",
+        },
+      ],
     },
-    plugins: [new MiniCssExtractPlugin()]
+    plugins: [
+      new RemovePlugin({
+        after: {
+          include: ["./built/react"],
+        },
+      }),
+    ],
   },
   sharedConfig
 );
 
-module.exports = [libConfig, relayConfig, otherRelayConfig];
+//module.exports = [relayConfig, libConfig, otherRelayConfig];
+
+module.exports = [
+  createReact,
+  createDeclarations,
+  createLibrary,
+  createStandaloneRelay,
+];

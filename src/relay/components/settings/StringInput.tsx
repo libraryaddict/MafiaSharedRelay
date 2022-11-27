@@ -7,7 +7,7 @@ function StringInput({ button }: { button: ComponentSetting }): JSX.Element {
       className="stringcontainer"
       name={button.name}
       defaultValue={button.value}
-      onChange={(e) => (button.value = e.target.value)}
+      onChange={(e) => button.setValue(e.target.value)}
     />
   );
 }

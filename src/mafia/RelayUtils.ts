@@ -1,58 +1,30 @@
-import { propertyExists, getProperty, fileToBuffer } from "kolmafia";
+import {
+  propertyExists,
+  getProperty,
+  fileToBuffer,
+  formFields,
+  write,
+  print,
+} from "kolmafia";
+import {
+  RelayComponent,
+  ComponentSetting,
+  RelayPage,
+  ExtraHtml,
+  ComponentDropdown,
+} from "./RelayTypes";
 
-export interface RelayPage {
-  file?: string;
-  page: string; // The name of the page
-  components: RelayComponent[];
-}
+export function handledApiRequest(): boolean {
+  const fields = formFields();
 
-export enum RelayComponentType {
-  BOOLEAN = "boolean",
-  DROPDOWN = "dropdown",
-  STRING = "string",
-  HTML = "html",
-  INTERRUPT = "interrupt",
-}
+  if (fields["api"] == null) {
+    return false;
+  }
+  const returns = eval(fields["api"]) || "";
+  // We include the ' ' because otherwise the browser doesn't like an empty page
+  write(returns + (returns ? "" : " "));
 
-export interface RelayComponent {
-  type: RelayComponentType;
-}
-
-export interface ComponentInterrupt extends RelayComponent {
-  name: string;
-  notification?: string;
-  actions: RelayPreference[];
-  css?: string;
-}
-
-export interface RelayPreference {
-  preference: string;
-  value: string;
-}
-
-export interface ComponentHtml extends RelayComponent {
-  data?: string; // If missing, will be skipped. Useful for splitting setting buttons into different tables.
-}
-
-export interface ComponentSetting extends RelayComponent {
-  name?: string; // Display name, if missing will default to preference
-  description: string; // Display description
-  preference: string; // Preference to set/load from
-  default?: string; // Value to default to if preference has not been set
-  value?: string; // Current value, is set on runtime
-  //  validates: string; // A javascript function that accepts (string, object) => boolean, where object is a { pref : value } of all the settings this relay page has
-  dropdown?: ComponentDropdown[]; // Dropdown values if dropdown setting
-  dropdownFiller?: string;
-}
-
-export interface ComponentDropdown {
-  display?: string;
-  value: string;
-}
-
-export interface ExtraHtml {
-  cssFiles?: string[]; // Points to a file.css
-  css?: string; // Inline css, basically contents of a css file
+  return true;
 }
 
 export function validateComponents(components: RelayComponent[]) {
@@ -65,6 +37,15 @@ export function validateComponents(components: RelayComponent[]) {
 
     button.name = button.name ?? button.preference;
 
+    if (button.validate != null) {
+      try {
+        eval(button.validate);
+      } catch (e) {
+        print(`Unable to load ${button.name}'s validator '${button.validate}'`);
+        button.validate = null;
+      }
+    }
+
     if (button.value != null) {
       continue;
     }
@@ -76,9 +57,9 @@ export function validateComponents(components: RelayComponent[]) {
     } else if (button.default != null) {
       val = button.default;
     } else {
-      if (button.type == RelayComponentType.DROPDOWN) {
+      if (button.type == "dropdown") {
         val = button.dropdown[0].value;
-      } else if (button.type == RelayComponentType.BOOLEAN) {
+      } else if (button.type == "boolean") {
         val = "true";
       } else {
         val = "";
@@ -101,7 +82,7 @@ export function generateHTML(
 
   const buffer: string[] = [];
 
-  const cssFiles = ["/shared_relay/main.css"];
+  const cssFiles = [];
 
   if (extraHtml && extraHtml.cssFiles) {
     cssFiles.push(...extraHtml.cssFiles);
@@ -110,16 +91,17 @@ export function generateHTML(
   buffer.push("<head>");
 
   cssFiles.forEach((s) => {
-    buffer.push(`<link rel="stylesheet" href="${s}">`);
+    buffer.push(`<link rel="stylesheet" src="${s}">`);
   });
 
+  buffer.push("<style>");
+  buffer.push(`${require("../../built/react/main.css")}`);
+
   if (extraHtml && extraHtml.css) {
-    buffer.push("<style>");
-
     buffer.push(extraHtml.css);
-
-    buffer.push("</style>");
   }
+
+  buffer.push("</style>");
 
   buffer.push("</head>");
 
@@ -140,7 +122,9 @@ export function generateHTML(
   buffer.push("</script>");
 
   // include react script
-  buffer.push('<script src="./shared_relay/shared_relay.js"></script>');
+  buffer.push(
+    `<script src="${require("../../built/react/script.js")}"></script>`
+  );
 
   return buffer.join("\n");
 }
@@ -190,7 +174,7 @@ export function parsePageFromJson(id: string, jsonData: string): RelayPage {
   subpage.file = id;
 
   for (const button of subpage.components as ComponentSetting[]) {
-    if (button.type != RelayComponentType.DROPDOWN) {
+    if (button.type != "dropdown") {
       continue;
     }
 

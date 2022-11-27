@@ -1,5 +1,6 @@
 import * as React from "react";
 import { addNotification, saveSettings } from "../api/ApiRequest";
+import SettingValidator from "../api/SettingValidator";
 import Interrupt from "../components/Interrupt";
 import Setting from "../components/settings/Setting";
 import {
@@ -8,7 +9,7 @@ import {
   RelayComponent,
   ComponentHtml,
   ComponentPage,
-  ComponentInterrupt
+  ComponentInterrupt,
 } from "../types/Types";
 
 function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
@@ -34,6 +35,7 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
   }
 
   const elements: JSX.Element[] = [];
+  const validator = new SettingValidator();
 
   groups.forEach((components) => {
     if ((components as RelayComponent).type == RelayComponentType.HTML) {
@@ -46,7 +48,7 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
       elements.push(
         <div
           dangerouslySetInnerHTML={{
-            __html: (components as ComponentHtml).data
+            __html: (components as ComponentHtml).data,
           }}
         />
       );
@@ -66,12 +68,22 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
       <table>
         <tbody>
           {buttons.map((setting, index) => (
-            <Setting key={index} button={setting} />
+            <Setting key={index} button={setting} validator={validator} />
           ))}
         </tbody>
       </table>
     );
   });
+
+  validator.updateObject();
+
+  // If we have no settings in which we'd save stuff, don't bother rendering save button
+  if (
+    page.components.find((c) => (c as ComponentSetting).preference != null) ==
+    null
+  ) {
+    return <>{elements}</>;
+  }
 
   return (
     <>

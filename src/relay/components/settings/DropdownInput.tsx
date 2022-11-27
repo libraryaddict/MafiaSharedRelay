@@ -7,7 +7,7 @@ function DropdownInput({ button }: { button: ComponentSetting }): JSX.Element {
       className="dropdowncontainer"
       name={button.name}
       defaultValue={button.value}
-      onChange={(e) => (button.value = e.target.value)}
+      onChange={(e) => button.setValue(e.target.value)}
     >
       {button.dropdown.map((option) => {
         return (

@@ -17,7 +17,7 @@ function BooleanInput({ button }: { button: ComponentSetting }): JSX.Element {
         className="toggle-track"
         onClick={() => {
           setValue(!value);
-          button.value = (!value).toString();
+          button.setValue((!value).toString());
         }}
       >
         <span className="toggle-indicator">
