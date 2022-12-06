@@ -2,6 +2,7 @@ import { formFields, write } from "kolmafia";
 import { RelayPage, ExtraHtml } from "./RelayTypes";
 import {
   generateHTML,
+  getPagePath,
   handledApiRequest,
   parseCssFromFile,
   parsePageFromFile,
@@ -24,29 +25,60 @@ export function main(...pagesToLoad: (string | RelayPage)[]) {
 
   if (pagesToLoad.length > 0) {
     let cssFile: string;
-    for (let page of pagesToLoad) {
-      // If the parameter is a string, then try to load from file
-      if (typeof page == "string") {
-        cssFile = parseCssFromFile(page);
-        page = parsePageFromFile(page);
+    for (const pageName of pagesToLoad) {
+      try {
+        let page: RelayPage = null;
+
+        // If the parameter is a string, then try to load from file
+        if (typeof pageName == "string") {
+          cssFile = parseCssFromFile(pageName);
+          page = parsePageFromFile(pageName);
+        } else {
+          page = pageName;
+        }
+
+        if (page == null) {
+          continue;
+        }
+
+        // Assume at this point it must be a RelayPage
+        pages.push(page);
+
+        if (cssFile == null) {
+          continue;
+        }
+
+        if (extraHtml == null) {
+          extraHtml = { cssFiles: [] };
+        }
+
+        extraHtml.cssFiles.push(cssFile);
+      } catch (e) {
+        write(
+          "<h2>An error occured while trying to load " +
+            (typeof pageName == "string"
+              ? getPagePath(pageName) + ", is your json properly formatted?"
+              : "a relay page") +
+            "</h2>"
+        );
+
+        if (e) {
+          write("<br>");
+          write(e);
+
+          if (e.stack) {
+            for (let s of e.stack.split("\n") as string[]) {
+              while (s.match(/\t|\r/)) {
+                s = s.replace(/\t|\r/, "");
+              }
+
+              write("<br>");
+              write(s);
+            }
+          }
+        }
+        return;
       }
-
-      if (page == null) {
-        continue;
-      }
-
-      // Assume at this point it must be a RelayPage
-      pages.push(page);
-
-      if (cssFile == null) {
-        continue;
-      }
-
-      if (extraHtml == null) {
-        extraHtml = { cssFiles: [] };
-      }
-
-      extraHtml.cssFiles.push(cssFile);
     }
   }
 

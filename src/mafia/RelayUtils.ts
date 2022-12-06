@@ -129,10 +129,7 @@ export function generateHTML(
   return buffer.join("\n");
 }
 
-/**
- * Parses from relay/shared_relay/pages/ if no slashes are in the name, otherwise expects a valid json file
- */
-export function parsePageFromFile(file: string): RelayPage {
+export function getPagePath(file: string) {
   let fileName = file.includes("/")
     ? file
     : "relay/shared_relay/pages/" + file + ".json";
@@ -141,7 +138,14 @@ export function parsePageFromFile(file: string): RelayPage {
     fileName += ".json";
   }
 
-  const data = fileToBuffer(fileName);
+  return fileName;
+}
+
+/**
+ * Parses from relay/shared_relay/pages/ if no slashes are in the name, otherwise expects a valid json file
+ */
+export function parsePageFromFile(file: string): RelayPage {
+  const data = fileToBuffer(getPagePath(file));
 
   return parsePageFromJson(file, data);
 }
