@@ -15,7 +15,7 @@ Place a file with the same name but .css and it'll load that css file alongside 
 For scripters, you can install the npm library located here:
 You will be bundling this into your script.
 
-To make use of it, you will be making a `relay/relay_MyScript.js` file that calls `generateHTML(pages: HtmlPage[])`. You can also provide extra css by providing `ExtraHtml`
+To make use of it, you will be making a `relay/relay_MyScript.js` file that calls `if (handleApiRequest()); return; generateHTML(pages: HtmlPage[])`. You can also provide extra css by providing `ExtraHtml`
 
 Components to be used are found in https://github.com/libraryaddict/MafiaSharedRelay/blob/master/src/mafia/RelayUtils.ts#L3 and work the same way as the .json structure does for the most part.
 
