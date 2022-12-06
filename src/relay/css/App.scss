@@ -18,7 +18,7 @@ $speed: 0.4s;
 
 #notificationsContainer {
   pointer-events: none;
-  position: absolute;
+  position: fixed;
   top: 5%;
   left: 70%;
   transform: translateX(-50%);
@@ -37,7 +37,7 @@ input.stringcontainer {
   height: 24px;
   margin: auto;
   display: flex;
-  padding-left: 10px;
+  padding-left: 5px;
 }
 
 input.interrupt {
@@ -227,10 +227,9 @@ input[value="true"] + .toggle-track .toggle-indicator {
 
 .setting {
   position: relative;
-  display: inline-block;
 }
 
-.setting .settingHover {
+.setting .settingNameHover {
   visibility: hidden;
   background-color: rgb(202, 202, 202);
   color: rgb(0, 0, 0);
@@ -243,10 +242,29 @@ input[value="true"] + .toggle-track .toggle-indicator {
   z-index: 1;
 }
 
-.setting:hover .settingHover {
+.setting:hover .settingNameHover {
   visibility: visible;
   padding: 5px;
   margin-left: 15px;
+}
+
+.hoverBox {
+  position: relative;
+  white-space: nowrap;
+}
+
+.settingInput .settingDefaultHover {
+  visibility: hidden;
+  color: rgb(102, 102, 102);
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.settingInput:hover .settingDefaultHover {
+  visibility: visible;
 }
 
 .invalid-setting input,

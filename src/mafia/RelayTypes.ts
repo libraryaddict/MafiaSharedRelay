@@ -35,7 +35,7 @@ export interface ComponentSetting extends RelayComponent {
   name?: string; // Display name, if missing will default to preference
   preference: string; // Preference to set/load from
   description: string; // Display description
-  default?: string; // Value to default to if preference has not been set
+  default?: string; // Value to default to if preference has not been set. If boolean, will default to true if missing
   value?: string; // Current value, is set on runtime
   validate?: string; // A javascript function that accepts (string, object) => boolean, where object is a { pref : value } of all the settings this relay page has
   invalidReason?: string; // Reason this is invalid if 'validate' is false

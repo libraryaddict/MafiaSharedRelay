@@ -1,9 +1,5 @@
 import { ComponentSetting } from "../types/Types";
 
-async function getProperty(property: string): Promise<string> {
-  return runJavascript(`require(\`kolmafia\`).getProperty(\`${property}\`);`);
-}
-
 export function addNotification(notification: string) {
   const ele = document.createElement("div");
   ele.className = "notification";
@@ -19,16 +15,9 @@ export function addNotification(notification: string) {
   container.appendChild(ele);
 }
 
-export async function setProperty(
-  property: string,
-  value: string
-): Promise<void> {
-  await runJavascript(
-    `require("kolmafia").setProperty(\`${property}\`, \`${value}\`);`
-  );
-}
-
-export function saveSettings(properties: ComponentSetting[]): Promise<string> {
+export function saveSettings(
+  properties: ComponentSetting[]
+): Promise<string[]> {
   return setProperties(
     properties
       .filter((p) => {
@@ -43,28 +32,21 @@ export function saveSettings(properties: ComponentSetting[]): Promise<string> {
   );
 }
 
-export function setProperties(properties: [string, string][]): Promise<string> {
-  let js =
-    'const changed = []; const change = (key, value) => { let prev = require("kolmafia").getProperty(key); if (prev === value)return; changed.push([key, prev, value]); require("kolmafia").setProperty(key, value);};';
-
-  js += properties
-    .map(([k, v]) => {
-      return `change(\`${k}\`, \`${v}\`);`;
-    })
-    .join("\n");
-
-  js += "JSON.stringify(changed);";
-
-  return runJavascript(js);
+export function setProperties(
+  properties: [string, string][]
+): Promise<string[]> {
+  return runRelay("setProperties", JSON.stringify(properties)).then((val) =>
+    JSON.parse(val)
+  );
 }
 
-async function runJavascript(javascript: string): Promise<string> {
+async function runRelay(formName: string, param: string): Promise<string> {
   return new Promise((resolve) => {
     const xhr = new XMLHttpRequest();
     xhr.responseType = "text";
     xhr.open("POST", document.location.href, true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.send("api=" + encodeURIComponent(javascript));
+    xhr.send(formName + "=" + encodeURIComponent(param));
     xhr.onreadystatechange = () => {
       if (xhr.readyState != 4 || xhr.status != 200) {
         return;

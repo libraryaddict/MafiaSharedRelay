@@ -31,6 +31,7 @@ export interface ComponentSetting extends RelayComponent {
   description: string; // Display description
   preference: string; // Preference to set
   value: string; // Current value
+  default: string;
   setValue: (value: string) => void;
   previousValue: string; // Value before the setting was updated
   validate: SettingValidator; // A javascript function that accepts (string, object) => boolean, where object is a { pref : value } of all the settings this relay page has

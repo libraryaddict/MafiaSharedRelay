@@ -96,15 +96,9 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
             (page.components as ComponentSetting[]).filter(
               (b) => b.preference != null
             )
-          ).then((e) => {
-            const changed: [string, string, string][] = JSON.parse(e);
-
-            for (const [prop, prev, now] of changed) {
-              addNotification(`${prop} changed from \`${prev}\` to \`${now}\``);
-            }
-
-            if (changed.length == 0) {
-              addNotification("No settings were modified.");
+          ).then((notifs) => {
+            for (const notif of notifs) {
+              addNotification(notif);
             }
           })
         }

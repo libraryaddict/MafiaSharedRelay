@@ -3,13 +3,13 @@ import { RelayPage, ExtraHtml } from "./RelayTypes";
 import {
   generateHTML,
   getPagePath,
-  handledApiRequest,
+  handleApiRequest,
   parseCssFromFile,
   parsePageFromFile,
 } from "./RelayUtils";
 
 export function main(...pagesToLoad: (string | RelayPage)[]) {
-  if (handledApiRequest()) {
+  if (handleApiRequest()) {
     return;
   }
 

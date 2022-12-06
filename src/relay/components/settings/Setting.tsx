@@ -22,12 +22,12 @@ function Setting({
   validator.addSetting(button, setValid);
 
   return (
-    <tr id="userPreference">
+    <tr className="userPreference" key={button.preference}>
       <td className="setting">
         {button.name}
-        <div className="settingHover">{button.preference}</div>
+        <div className="settingNameHover">{button.preference}</div>
       </td>
-      <td className={valid ? "" : "invalid-setting"}>
+      <td className={valid ? "settingInput" : "settingInput invalid-setting"}>
         {button.type === RelayComponentType.BOOLEAN ? (
           <BooleanInput button={button} />
         ) : button.type === RelayComponentType.DROPDOWN ? (
@@ -42,6 +42,15 @@ function Setting({
         ) : (
           <></>
         )}
+
+        <div className="hoverBox">
+          <small className="settingDefaultHover">
+            {button.default != null
+              ? "Default: " +
+                (button.default == "" ? "<Empty>" : button.default)
+              : "Default not set"}
+          </small>
+        </div>
       </td>
       <td>{button.description}</td>
     </tr>

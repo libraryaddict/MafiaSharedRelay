@@ -7,12 +7,7 @@ function BooleanInput({ button }: { button: ComponentSetting }): JSX.Element {
 
   return (
     <label className="checkcontainer">
-      <input
-        type="hidden"
-        name={button.name}
-        value={value.toString()}
-        data-default={button.value}
-      />
+      <input type="hidden" name={button.name} value={button.value} />
       <div
         className="toggle-track"
         onClick={() => {

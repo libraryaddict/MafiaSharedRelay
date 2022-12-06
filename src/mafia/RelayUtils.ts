@@ -5,6 +5,7 @@ import {
   formFields,
   write,
   print,
+  setProperty,
 } from "kolmafia";
 import {
   RelayComponent,
@@ -14,20 +15,62 @@ import {
   ComponentDropdown,
 } from "./RelayTypes";
 
-export function handledApiRequest(): boolean {
-  const fields = formFields();
+export function handleApiRequest(): boolean {
+  if (handleJavascript()) {
+    return true;
+  }
 
-  if (fields["api"] == null) {
+  if (handleProperties()) {
+    return true;
+  }
+
+  return false;
+}
+
+function handleProperties(): boolean {
+  const toSet: string = formFields()["setProperties"];
+
+  if (toSet == null) {
     return false;
   }
-  const returns = eval(fields["api"]) || "";
-  // We include the ' ' because otherwise the browser doesn't like an empty page
-  write(returns + (returns ? "" : " "));
 
+  const props: [string, string][] = JSON.parse(toSet);
+  const notifications: string[] = [];
+
+  for (const [key, value] of props) {
+    const prevValue = getProperty(key);
+
+    if (prevValue === value) {
+      continue;
+    }
+
+    setProperty(key, value);
+    notifications.push(`${key} changed from \`${prevValue}\` to \`${value}\``);
+  }
+
+  if (notifications.length == 0) {
+    notifications.push("No settings were modified.");
+  }
+
+  // We include the ' ' because otherwise the browser doesn't like an empty page
+  write(JSON.stringify(notifications));
   return true;
 }
 
-export function validateComponents(components: RelayComponent[]) {
+function handleJavascript(): boolean {
+  const js = formFields()["javascript"];
+
+  if (js == null) {
+    return false;
+  }
+
+  const returns = eval(js) || "";
+  // We include the ' ' because otherwise the browser doesn't like an empty page
+  write(returns + (returns ? "" : " "));
+  return true;
+}
+
+function validateComponents(components: RelayComponent[]) {
   for (const component of components) {
     const button = component as ComponentSetting;
 
@@ -44,6 +87,18 @@ export function validateComponents(components: RelayComponent[]) {
         print(`Unable to load ${button.name}'s validator '${button.validate}'`);
         button.validate = null;
       }
+    }
+
+    if (button.default != undefined && typeof button.default != "string") {
+      button.default = button.default + "";
+    }
+
+    if (button.value != undefined && typeof button.value != "string") {
+      button.value = button.value + "";
+    }
+
+    if (button.default == null && button.type == "boolean") {
+      button.default = "true";
     }
 
     if (button.value != null) {
@@ -77,6 +132,8 @@ export function generateHTML(
   pages = pages.filter((p) => p != null);
 
   for (const page of pages) {
+    page.file = page.file ?? page.page;
+
     validateComponents(page.components);
   }
 
