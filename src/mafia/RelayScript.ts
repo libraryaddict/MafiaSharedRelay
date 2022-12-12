@@ -52,7 +52,7 @@ export function main(...pagesToLoad: (string | RelayPage)[]) {
           extraHtml = { cssFiles: [] };
         }
 
-        extraHtml.cssFiles.push(cssFile);
+        extraHtml.css = (extraHtml.css ?? "") + cssFile;
       } catch (e) {
         write(
           "<h2>An error occured while trying to load " +

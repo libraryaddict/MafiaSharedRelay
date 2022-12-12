@@ -22,7 +22,11 @@ function Setting({
   validator.addSetting(button, setValid);
 
   return (
-    <tr className="userPreference" key={button.preference}>
+    <tr
+      className="userPreference"
+      key={button.preference}
+      data-name={button.name}
+    >
       <td className="setting">
         {button.name}
         <div className="settingNameHover">{button.preference}</div>

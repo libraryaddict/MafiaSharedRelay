@@ -19,7 +19,6 @@ export interface ComponentInterrupt extends RelayComponent {
   name: string;
   notification?: string;
   actions: RelayPreference[];
-  css?: string;
 }
 
 export interface RelayPreference {

@@ -6,6 +6,8 @@ import {
   write,
   print,
   setProperty,
+  propertyHasDefault,
+  propertyDefaultValue,
 } from "kolmafia";
 import {
   RelayComponent,
@@ -91,6 +93,10 @@ function validateComponents(components: RelayComponent[]) {
 
     if (button.default != undefined && typeof button.default != "string") {
       button.default = button.default + "";
+    }
+
+    if (button.default == null && propertyHasDefault(button.preference)) {
+      button.default = propertyDefaultValue(button.preference);
     }
 
     if (button.value != undefined && typeof button.value != "string") {
@@ -210,7 +216,7 @@ export function parsePageFromFile(file: string): RelayPage {
 export function parseCssFromFile(file: string): string | null {
   let fileName = file.includes("/")
     ? file
-    : "shared_relay/pages/" + file + ".css";
+    : "relay/shared_relay/pages/" + file + ".css";
 
   if (!fileName.endsWith(".css")) {
     fileName += ".css";
@@ -222,7 +228,7 @@ export function parseCssFromFile(file: string): string | null {
     return null;
   }
 
-  return fileName;
+  return data;
 }
 
 export function parsePageFromJson(id: string, jsonData: string): RelayPage {

@@ -43,7 +43,6 @@ export interface ComponentInterrupt extends RelayComponent {
   name: string;
   notification: string;
   actions: InterruptPreference[];
-  css: string;
 }
 
 export interface ComponentPage {
