@@ -4,10 +4,11 @@ import { ComponentSetting, RelayComponentType } from "../../types/Types";
 import BooleanInput from "./BooleanInput";
 import DropdownInput from "./DropdownInput";
 import StringInput from "./StringInput";
+import TagsInput from "./TagsInput";
 
 function Setting({
   button,
-  validator,
+  validator
 }: {
   button: ComponentSetting;
   validator: SettingValidator;
@@ -22,11 +23,7 @@ function Setting({
   validator.addSetting(button, setValid);
 
   return (
-    <tr
-      className="userPreference"
-      key={button.preference}
-      data-name={button.name}
-    >
+    <tr className="userPreference" data-name={button.name}>
       <td className="setting">
         {button.name}
         <div className="settingNameHover">{button.preference}</div>
@@ -36,6 +33,8 @@ function Setting({
           <BooleanInput button={button} />
         ) : button.type === RelayComponentType.DROPDOWN ? (
           <DropdownInput button={button} />
+        ) : button.type == RelayComponentType.TAGS ? (
+          <TagsInput button={button} />
         ) : (
           <StringInput button={button} />
         )}

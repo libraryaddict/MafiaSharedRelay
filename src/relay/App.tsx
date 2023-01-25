@@ -16,12 +16,12 @@ function App({ pages }: { pages: ComponentPage[] }) {
             path="/"
             element={<Navigate to={"/" + pages[0].file} replace={true} />}
           />{" "}
-          {pages.map((p, index) => {
+          {pages.map((p) => {
             return (
               <Route
-                key={index}
+                key={`${p.file} ${p.page}`}
                 path={"/" + p.file}
-                element={<RelayPage page={p} />}
+                element={<RelayPage components={p.components} />}
               ></Route>
             );
           })}{" "}

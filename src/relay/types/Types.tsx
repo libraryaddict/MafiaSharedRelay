@@ -6,6 +6,7 @@ export enum RelayComponentType {
   STRING = "string",
   HTML = "html",
   INTERRUPT = "interrupt",
+  TAGS = "tags"
 }
 
 export interface InterruptPreference {
@@ -20,6 +21,10 @@ export interface ComponentDropdown {
 
 export interface RelayComponent {
   type: RelayComponentType;
+}
+
+export interface RelayContainer extends RelayComponent {
+  components: RelayComponent[];
 }
 
 export interface ComponentHtml extends RelayComponent {
@@ -37,6 +42,10 @@ export interface ComponentSetting extends RelayComponent {
   validate: SettingValidator; // A javascript function that accepts (string, object) => boolean, where object is a { pref : value } of all the settings this relay page has
   invalidReason: string;
   dropdown: ComponentDropdown[]; // Dropdown values if dropdown
+  placeholderText: string; // Text that displays in string inputs if no text
+  allowDuplicateTags: boolean; // If duplicate tags can be input, case insensitive. Default true
+  tagsSeperator: string; // Text that seperates each tag from each other. Defaults to `,`
+  maxTags: string;
 }
 
 export interface ComponentInterrupt extends RelayComponent {

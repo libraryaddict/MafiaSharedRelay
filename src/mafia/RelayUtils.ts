@@ -11,10 +11,12 @@ import {
 } from "kolmafia";
 import {
   RelayComponent,
-  ComponentSetting,
+  RelaySetting,
   RelayPage,
   ExtraHtml,
-  ComponentDropdown,
+  DropdownValue,
+  RelayTags,
+  RelayDropdown,
 } from "./RelayTypes";
 
 export function handleApiRequest(): boolean {
@@ -74,7 +76,7 @@ function handleJavascript(): boolean {
 
 function validateComponents(components: RelayComponent[]) {
   for (const component of components) {
-    const button = component as ComponentSetting;
+    const button = component as RelaySetting;
 
     if (button.preference == null) {
       continue;
@@ -107,6 +109,21 @@ function validateComponents(components: RelayComponent[]) {
       button.default = "true";
     }
 
+    if (button.type == "tags") {
+      const tags = button as RelayTags;
+      if (tags.allowDuplicateTags == null) {
+        tags.allowDuplicateTags = true;
+      }
+
+      if (tags.tagsSeperator == null) {
+        tags.tagsSeperator = ",";
+      }
+
+      if (button.placeholderText == null) {
+        button.placeholderText = button.default ? button.default : "";
+      }
+    }
+
     if (button.value != null) {
       continue;
     }
@@ -119,7 +136,11 @@ function validateComponents(components: RelayComponent[]) {
       val = button.default;
     } else {
       if (button.type == "dropdown") {
-        val = button.dropdown[0].value;
+        if (typeof (button as RelayDropdown).dropdown[0] == "string") {
+          val = (button as RelayDropdown).dropdown[0] as string;
+        } else {
+          val = ((button as RelayDropdown).dropdown[0] as DropdownValue).value;
+        }
       } else if (button.type == "boolean") {
         val = "true";
       } else {
@@ -151,6 +172,7 @@ export function generateHTML(
     cssFiles.push(...extraHtml.cssFiles);
   }
 
+  buffer.push("<!DOCTYPE html>");
   buffer.push("<head>");
 
   cssFiles.forEach((s) => {
@@ -240,28 +262,32 @@ export function parsePageFromJson(id: string, jsonData: string): RelayPage {
 
   subpage.file = id;
 
-  for (const button of subpage.components as ComponentSetting[]) {
+  for (const button of subpage.components as RelaySetting[]) {
     if (button.type != "dropdown") {
       continue;
     }
 
-    if (button.dropdown == null) {
-      button.dropdown = [];
-    } else if (typeof button.dropdown[0] == "string") {
-      button.dropdown = (button.dropdown as unknown as string[]).map((s) => {
-        return {
-          display: s,
-          value: s,
-        };
-      });
+    const dropdown = button as RelayDropdown;
+
+    if (dropdown.dropdown == null) {
+      dropdown.dropdown = [];
+    } else if (typeof dropdown.dropdown[0] == "string") {
+      dropdown.dropdown = (dropdown.dropdown as unknown as string[]).map(
+        (s) => {
+          return {
+            display: s,
+            value: s,
+          };
+        }
+      );
     }
 
-    if (button.dropdownFiller == null) {
+    if (dropdown.dropdownFiller == null) {
       continue;
     }
 
-    const data: ComponentDropdown[] = (
-      eval(button.dropdownFiller) as [string, string][]
+    const data: DropdownValue[] = (
+      eval(dropdown.dropdownFiller) as [string, string][]
     ).map(([display, value]) => {
       return {
         display: display,
@@ -269,7 +295,7 @@ export function parsePageFromJson(id: string, jsonData: string): RelayPage {
       };
     });
 
-    button.dropdown.push(...data);
+    (dropdown.dropdown as DropdownValue[]).push(...data);
   }
 
   return subpage;

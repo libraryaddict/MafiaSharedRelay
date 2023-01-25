@@ -22,8 +22,8 @@ const Layout = ({ pages }: { pages: ComponentPage[] }) => {
       <nav>
         <div className="topBar">
           {" "}
-          {pages.map((p, index) => (
-            <div key={index} className="tabEntry">
+          {pages.map((p) => (
+            <div key={`${p.file} ${p.page}`} className="tabEntry">
               <NavLink to={"/" + p.file}>{p.page}</NavLink>{" "}
             </div>
           ))}

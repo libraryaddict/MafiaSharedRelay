@@ -9,9 +9,9 @@ function DropdownInput({ button }: { button: ComponentSetting }): JSX.Element {
       defaultValue={button.value}
       onChange={(e) => button.setValue(e.target.value)}
     >
-      {button.dropdown.map((option) => {
+      {button.dropdown.map((option, index) => {
         return (
-          <option key={option.value} value={option.value}>
+          <option key={index} value={option.value}>
             {option.display || option.value}
           </option>
         );

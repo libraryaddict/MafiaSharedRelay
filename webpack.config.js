@@ -7,14 +7,14 @@ const { merge } = require("webpack-merge");
 const sharedConfig = {
   mode: "production",
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".ts", ".js"]
   },
   externals: {
-    kolmafia: "commonjs kolmafia",
+    kolmafia: "commonjs kolmafia"
   },
   optimization: {
-    minimize: false,
-  },
+    minimize: false
+  }
 };
 
 // Create the react files
@@ -25,7 +25,7 @@ const createReact = merge(
     output: {
       path: path.join(__dirname, "./built/react"),
       filename: "script.js",
-      libraryTarget: "umd",
+      libraryTarget: "umd"
     },
     module: {
       rules: [
@@ -38,17 +38,17 @@ const createReact = merge(
             presets: [
               "@babel/env",
               "@babel/preset-typescript",
-              "@babel/preset-react",
-            ],
-          },
+              "@babel/preset-react"
+            ]
+          }
         },
         {
           test: /\.scss$/,
-          use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
-        },
-      ],
+          use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"]
+        }
+      ]
     },
-    plugins: [new MiniCssExtractPlugin()],
+    plugins: [new MiniCssExtractPlugin()]
   },
   sharedConfig
 );
@@ -65,7 +65,7 @@ const createDeclarations = merge(
     output: {
       filename: "ignored.js",
       path: path.join(__dirname, "./dist"),
-      libraryTarget: "commonjs",
+      libraryTarget: "commonjs"
     },
     module: {
       rules: [
@@ -73,26 +73,26 @@ const createDeclarations = merge(
           // Include ts, tsx, js, and jsx files.
           test: /\.ts$/,
           // exclude: /node_modules/,
-          loader: "ts-loader",
+          loader: "ts-loader"
         },
         {
           test: /\.js/,
-          type: "asset/inline",
+          type: "asset/inline"
         },
         {
           test: /\.css/,
-          type: "asset/source",
-        },
-      ],
+          type: "asset/source"
+        }
+      ]
     },
     plugins: [
       new TypescriptDeclarationPlugin({ removeComments: false }),
       new RemovePlugin({
         after: {
-          include: ["./dist/ignored.js"],
-        },
-      }),
-    ],
+          include: ["./dist/ignored.js"]
+        }
+      })
+    ]
   },
   sharedConfig
 );
@@ -106,7 +106,7 @@ const createLibrary = merge(
     output: {
       filename: "index.js",
       path: path.join(__dirname, "./dist"),
-      libraryTarget: "commonjs",
+      libraryTarget: "commonjs"
     },
     module: {
       rules: [
@@ -114,18 +114,18 @@ const createLibrary = merge(
           // Include ts, tsx, js, and jsx files.
           test: /\.ts$/,
           // exclude: /node_modules/,
-          loader: "babel-loader",
+          loader: "babel-loader"
         },
         {
           test: /\.js/,
-          type: "asset/inline",
+          type: "asset/inline"
         },
         {
           test: /\.css/,
-          type: "asset/source",
-        },
-      ],
-    },
+          type: "asset/source"
+        }
+      ]
+    }
   },
   sharedConfig
 );
@@ -138,7 +138,7 @@ const createStandaloneRelay = merge(
     output: {
       path: path.join(__dirname, "./built/relay/"),
       filename: "shared_relay.js",
-      libraryTarget: "commonjs",
+      libraryTarget: "commonjs"
     },
     module: {
       rules: [
@@ -146,34 +146,32 @@ const createStandaloneRelay = merge(
           // Include ts, tsx, js, and jsx files.
           test: /\.(ts|js)x?$/,
           // exclude: /node_modules/,
-          loader: "babel-loader",
+          loader: "babel-loader"
         },
         {
           test: /\.js/,
-          type: "asset/inline",
+          type: "asset/inline"
         },
         {
           test: /\.css/,
-          type: "asset/source",
-        },
-      ],
+          type: "asset/source"
+        }
+      ]
     },
     plugins: [
       new RemovePlugin({
         after: {
-          include: ["./built/react"],
-        },
-      }),
-    ],
+          include: ["./built/react"]
+        }
+      })
+    ]
   },
   sharedConfig
 );
-
-//module.exports = [relayConfig, libConfig, otherRelayConfig];
 
 module.exports = [
   createReact,
   createDeclarations,
   createLibrary,
-  createStandaloneRelay,
+  createStandaloneRelay
 ];

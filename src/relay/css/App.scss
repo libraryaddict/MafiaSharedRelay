@@ -140,7 +140,7 @@ td {
   cursor: pointer;
   display: flex;
   height: $track-height;
-  margin: auto;
+  margin-left: 5%;
   position: relative;
   width: $track-width;
 }
@@ -200,6 +200,10 @@ input[value="true"] + .toggle-track .toggle-indicator {
   margin-right: 10px;
   border-radius: 10px;
   background-color: #333333;
+}
+
+.relayTable {
+  padding-bottom: 10px;
 }
 
 .tabEntry a {
@@ -281,4 +285,112 @@ input[value="true"] + .toggle-track .toggle-indicator {
   padding: 0px 5px;
   border-radius: 10px;
   color: red;
+}
+
+.settingTag {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  color: black;
+  margin: 5px;
+}
+
+input {
+  outline: none;
+}
+
+.settingTagClose {
+  cursor: pointer;
+}
+
+.settingTagSingle {
+  display: inline-flex;
+  border: 1.5px solid #764abc;
+  padding: 2px 0px 0px 5px;
+  border-radius: 5px;
+  white-space: nowrap;
+  color: #764abc;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  cursor: grab;
+  position: relative;
+}
+
+.dropdownMenu {
+  position: absolute;
+  transform: translateY(4px);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow-y: auto;
+  overflow-x: clip;
+  overflow-wrap: break-word;
+  max-height: 250px;
+  background-color: #fff;
+  z-index: 99;
+  user-select: none;
+}
+
+.dropdownItem {
+  padding: 3px;
+  cursor: pointer;
+  padding-left: 0.2em;
+}
+
+.dropdownMenu > div + div {
+  border-top: 1px solid rgb(214, 214, 214);
+}
+
+.dropdownItem:hover {
+  background-color: #9fc3f870;
+}
+
+.userPreference {
+  td:first-child {
+    width: 15%;
+  }
+  td:nth-child(2) {
+    width: 20%;
+  }
+}
+
+.hintTagDrop {
+  width: 40px;
+  min-height: 100%;
+  height: 20px;
+  background-image: linear-gradient(rgb(162, 162, 162), transparent);
+  border-radius: 5px;
+  padding: 0px 0px 0px 5px;
+  margin-right: 5px;
+  margin-bottom: 2px;
+}
+
+.hintTagDropOriginal {
+  background-image: linear-gradient(rgb(176, 94, 168), transparent);
+}
+
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.draggedItem {
+  opacity: 40%;
+}
+
+.hidden {
+  display: none;
+}
+
+.rearrangedTag {
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
 }

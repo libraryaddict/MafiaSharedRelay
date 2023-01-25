@@ -1,5 +1,5 @@
 import { formFields, write } from "kolmafia";
-import { RelayPage, ExtraHtml } from "./RelayTypes";
+import { ExtraHtml, RelayPage } from "./RelayTypes";
 import {
   generateHTML,
   getPagePath,

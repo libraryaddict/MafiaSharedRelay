@@ -8,20 +8,23 @@ import {
   RelayComponentType,
   RelayComponent,
   ComponentHtml,
-  ComponentPage,
-  ComponentInterrupt,
+  ComponentInterrupt
 } from "../types/Types";
 
-function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
+function RelayPage({
+  components
+}: {
+  components: RelayComponent[];
+}): JSX.Element {
   const groups: (RelayComponent | RelayComponent[])[] = [];
   let currentGroup: RelayComponent[] | null = null;
 
-  for (const component of page.components) {
+  for (const component of components) {
     if (
       component.type == RelayComponentType.HTML ||
       component.type == RelayComponentType.INTERRUPT
     ) {
-      groups.push(component as ComponentHtml);
+      groups.push(component);
       currentGroup = null;
       continue;
     }
@@ -37,7 +40,7 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
   const elements: JSX.Element[] = [];
   const validator = new SettingValidator();
 
-  groups.forEach((components) => {
+  groups.forEach((components, index) => {
     if ((components as RelayComponent).type == RelayComponentType.HTML) {
       const html = components as ComponentHtml;
 
@@ -47,8 +50,9 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
 
       elements.push(
         <div
+          key={`HTML ${index}`}
           dangerouslySetInnerHTML={{
-            __html: (components as ComponentHtml).data,
+            __html: (components as ComponentHtml).data
           }}
         />
       );
@@ -57,7 +61,10 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
 
     if ((components as RelayComponent).type == RelayComponentType.INTERRUPT) {
       elements.push(
-        <Interrupt button={components as ComponentInterrupt}></Interrupt>
+        <Interrupt
+          key={`Interrupt ${index}`}
+          button={components as ComponentInterrupt}
+        ></Interrupt>
       );
       return;
     }
@@ -65,10 +72,14 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
     const buttons = components as ComponentSetting[];
 
     elements.push(
-      <table>
+      <table key={`Table ${index}`} className="relayTable">
         <tbody>
           {buttons.map((setting, index) => (
-            <Setting key={index} button={setting} validator={validator} />
+            <Setting
+              key={`Setting ${setting.name} ${setting.preference} ${index}`}
+              button={setting}
+              validator={validator}
+            />
           ))}
         </tbody>
       </table>
@@ -79,8 +90,7 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
 
   // If we have no settings in which we'd save stuff, don't bother rendering save button
   if (
-    page.components.find((c) => (c as ComponentSetting).preference != null) ==
-    null
+    components.find((c) => (c as ComponentSetting).preference != null) == null
   ) {
     return <>{elements}</>;
   }
@@ -93,7 +103,7 @@ function RelayPage({ page }: { page: ComponentPage }): JSX.Element {
         className="save"
         onClick={() =>
           saveSettings(
-            (page.components as ComponentSetting[]).filter(
+            (components as ComponentSetting[]).filter(
               (b) => b.preference != null
             )
           ).then((notifs) => {
