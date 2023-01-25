@@ -36,3 +36,9 @@ To install as an API, use
 To install otherwise
 
 `git checkout libraryaddict/MafiaSharedRelay release`
+
+## Projects using this!
+
+https://github.com/frazazel/goorbo
+
+https://github.com/libraryaddict/Greyday
