@@ -47,7 +47,7 @@ export interface RelaySetting extends RelayComponent {
   value?: string; // Current value, is set on runtime
   validate?: string; // A javascript function that accepts (string, object) => boolean, where object is a { pref : value } of all the settings this relay page has
   invalidReason?: string; // Reason this is invalid if 'validate' is false
-  placeholderText: string; // Text that displays in string inputs if no text, default is <Default Value>
+  placeholderText?: string; // Text that displays in string inputs if no text, default is <Default Value>
 }
 
 export interface RelayDropdown extends RelaySetting {

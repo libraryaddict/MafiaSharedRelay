@@ -107,6 +107,7 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
 
   //Remove tags by clicking the cross sign
   const removeTags = (index: number) => {
+    setLastInserted(-1);
     setTags([...tags.filter((tag, ind) => ind !== index)]);
 
     const vals = button.value
@@ -170,7 +171,7 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
     );
   };
 
-  const dropdownFocusHandler = (e: EventTarget | null) => {
+  const dropdownFocusHandler = () => {
     if (searchContainerRef.current == null) {
       return;
     }
@@ -187,12 +188,10 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
   };
 
   useEffect(() => {
-    window.addEventListener("click", (e) => dropdownFocusHandler(e.target));
+    window.addEventListener("click", () => dropdownFocusHandler());
 
     return () => {
-      window.removeEventListener("click", (e) =>
-        dropdownFocusHandler(e.target)
-      );
+      window.removeEventListener("click", () => dropdownFocusHandler());
     };
   });
 
