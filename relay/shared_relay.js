@@ -120,6 +120,8 @@ function validateComponents(components) {var _iterator2 = _createForOfIteratorHe
         var tags = button;
         if (tags.allowDuplicateTags == null) {
           tags.allowDuplicateTags = true;
+        } else if (typeof tags.allowDuplicateTags == "string") {
+          tags.allowDuplicateTags = tags.allowDuplicateTags == "true";
         }
 
         if (tags.tagsSeperator == null) {
