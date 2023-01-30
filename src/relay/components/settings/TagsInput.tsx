@@ -88,7 +88,8 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
     } else if (
       event.key === "Backspace" &&
       tags.length &&
-      event.currentTarget.value.length == 0
+      event.currentTarget.value.length == 0 &&
+      !cantRemoveTags
     ) {
       setSearchValue(tags[tags.length - 1].display);
 
@@ -128,12 +129,21 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
   const [lastInserted, setLastInserted] = useState(-1);
   const [draggedWidth, setDraggedWidth] = useState(0);
   const [draggedHeight, setDraggedHeight] = useState(0);
+  const [cantRemoveTags, setCantRemoveTags] = useState(
+    button.minTags != null && parseInt(button.minTags) >= tags.length
+  );
 
   useEffect(() => {
     if (showMenu && searchRef.current) {
       searchRef.current.focus();
     }
   }, [showMenu]);
+
+  useEffect(() => {
+    setCantRemoveTags(
+      button.minTags != null && parseInt(button.minTags) >= tags.length
+    );
+  });
 
   const onAddTag = (option: ComponentDropdown) => {
     if (
@@ -326,7 +336,8 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
               className={
                 "settingTagSingle" +
                 (index == draggedItem ? " draggedItem" : "") +
-                (lastInserted == index ? " rearrangedTag" : "")
+                (lastInserted == index ? " rearrangedTag" : "") +
+                (cantRemoveTags ? "" : " settingTagSingleCloseVisible")
               }
               style={{
                 backgroundColor: `${stringToColour(
@@ -336,7 +347,9 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
             >
               <span>{tag.display}</span>
               <div
-                className="settingTagClose"
+                className={
+                  "settingTagClose" + (cantRemoveTags ? " hidden" : "")
+                }
                 onClick={() => removeTags(index)}
               >
                 <CloseIcon />
@@ -348,7 +361,7 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
           draggedItem + 1 != insertIndexAt &&
           draggedItem != insertIndexAt ? (
             <div
-              className="hintTagDrop"
+              className="tagContainer hintTagDrop"
               onDragOver={(e) => {
                 e.preventDefault();
               }}
@@ -365,7 +378,7 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
       <div
         ref={searchContainerRef}
         className={
-          "settingTagInput" +
+          "tagContainer settingTagInput" +
           (button.maxTags && tags.length >= parseInt(button.maxTags)
             ? " hidden"
             : "")

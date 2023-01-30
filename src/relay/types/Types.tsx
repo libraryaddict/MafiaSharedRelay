@@ -45,7 +45,8 @@ export interface ComponentSetting extends RelayComponent {
   placeholderText: string; // Text that displays in string inputs if no text
   allowDuplicateTags: boolean; // If duplicate tags can be input, case insensitive. Default true
   tagsSeperator: string; // Text that seperates each tag from each other. Defaults to `,`
-  maxTags: string;
+  minTags: string; // Min amount of tags before it refuses to let you delete
+  maxTags: string; // Max amount of tags before it refuses to let you add more
 }
 
 export interface ComponentInterrupt extends RelayComponent {

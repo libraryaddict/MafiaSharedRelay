@@ -60,7 +60,8 @@ export interface RelayTags extends RelayDropdown {
   type: "tags";
   allowDuplicateTags?: boolean; // If using the tags, do we allow dupes. Comparison is case insensitive. Default true
   tagsSeperator?: string; // Text that seperates each tag from each other. Defaults to `,`
-  maxTags?: number;
+  minTags?: number; // Min amount of tags before it refuses to let you delete
+  maxTags?: number; // Max amount of tags before it refuses to let you add more
 }
 
 export interface ExtraHtml {
