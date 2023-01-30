@@ -113,6 +113,8 @@ function validateComponents(components: RelayComponent[]) {
       const tags = button as RelayTags;
       if (tags.allowDuplicateTags == null) {
         tags.allowDuplicateTags = true;
+      } else if (typeof tags.allowDuplicateTags == "string") {
+        tags.allowDuplicateTags = tags.allowDuplicateTags == "true";
       }
 
       if (tags.tagsSeperator == null) {
